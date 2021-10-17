@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: birthdays
+  labels:
+    app: birthdays
+spec:
+  type: LoadBalancer
+  ports:
+    - name: service
+      protocol: TCP
+      port: 8080
+    - name: metrics
+      protocol: TCP
+      port: 9095
+  selector:
+    app: birthdays
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: birthdays
+  labels:
+    app: birthdays
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: birthdays
+  template:
+    metadata:
+      name: birthdays
+      labels:
+        app: birthdays
+    spec:
+      containers:
+      - name: birthdays
+        image: xboshy/birthdays:0.1.0
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+          - containerPort: 9095
+        env:
+          - name: BIRTHDAYS_Listen
+            value: ":8080"
+          - name: BIRTHDAYS_Workers
+            value: "2"
+          - name: BIRTHDAYS_Timeout
+            value: "1000"
+          - name: BIRTHDAYS_Metrics
+            value: ":9095"
+          - name: BIRTHDAYS_PersistencePlugin
+            value: "persistence_etcd.so"
+          - name: BIRTHDAYS_PersistenceOptions
+            value: "{ \"endpoints\": \"etcd:2379\", \"path\": \"/users\" }"
+      restartPolicy: Always

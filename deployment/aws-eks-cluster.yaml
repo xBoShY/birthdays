@@ -1,0 +1,24 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: birthdays
+  region: eu-north-1
+managedNodeGroups:
+  - name: ng-1
+    volumeSize: 10
+    instanceType: t3.micro
+    ssh:
+      allow: true
+      publicKeyPath: aws-eks-key.pub
+  - name: ng-2
+    volumeSize: 10
+    instanceType: t3.micro
+    ssh:
+      allow: true
+      publicKeyPath: aws-eks-key.pub
+  - name: ng-3
+    volumeSize: 10
+    instanceType: t3.micro
+    ssh:
+      allow: true
+      publicKeyPath: aws-eks-key.pub
